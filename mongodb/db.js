@@ -1,7 +1,12 @@
 
 import mongoose from 'mongoose';
-const url = 'mongodb://localhost:27017/sdada';
-mongoose.connect(url);
+const config = require('config-lite')({
+    filename: 'default',
+    config_basedir: __dirname,
+    config_dir: 'config'
+});
+
+mongoose.connect(config.url);
 
 const db = mongoose.connection;
 
@@ -16,7 +21,7 @@ db.on('error', function(error){
 
 db.on('close', function(err){
     console.log('Database close');
-    mongoose.connect(url);
+    mongoose.connect(config.url);
 });
 
 export default db;
