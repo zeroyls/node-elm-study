@@ -4,6 +4,7 @@ import BaseComponent from '../../prototype/baseComponent'
 import crypto from 'crypto';
 import formidable from 'formidable';
 import dtime from 'time-formater';
+import { ADDRGETNETWORKPARAMS } from 'dns';
 
 
 class Admin extends BaseComponent{
@@ -77,7 +78,7 @@ class Admin extends BaseComponent{
             }
         })
     }
-    
+
     async login(req, res, next){
         const form = new formidable.IncomingForm();
         form.parse(req, async(err, fields, files) => {
@@ -132,6 +133,81 @@ class Admin extends BaseComponent{
             }
         })
     }
+
+    async singout(req, res, next){
+        try{
+            delete req.session.admin_id;
+            res.send({
+                status: 1,
+                message: '退出成功'
+            })
+        }catch(err){
+            res.send({
+                status: 0,
+                message: '退出失败'
+            })
+        }
+    }
+
+    async getAllAdmin(req, res, next){
+        const {limit = 20, offset = 0}  = req.query;
+        try{
+            const allAdmin = await AdminModel.find({}, '-_id -password').sort({id: -1}).skip(Number(offset)).limit(Number(limit));
+            res.send({
+                status: 1,
+                data: allAdmin
+            })
+        }catch(err){
+            res.send({
+                status: 0,
+                message: '获取超级管理列表失败'
+            })
+        }
+    }
+
+    async getAdminCount(req, res, next){
+        try{
+            const count = await AdminModel.count();
+            res.send({
+                status: 1,
+                count   
+            })
+        }catch(err){
+            res.send({
+                status: 0,
+                message: '获取管理员数量失败'
+            })
+        }
+    }
+
+    async getAdminInfo(req, res, next){
+        const admin_id = req.session.admin_id;
+        if(!admin_id || !Number(admin_id)){
+            res.send({
+                status: 0,
+                message: '获取管理员信息失败'
+            })
+            return
+        }
+
+        try{
+            const info = await AdminModel.findOne({id: admin_id}, '-_id -__v -password');
+            if(!info){
+                throw new Error('未找到当前管理员')
+            }else{
+                res.send({
+                    status: 1,
+                    data: info
+                })
+            }
+        }catch(err){
+            res.send({
+                status: 0,
+                message: '获取管理员信息失败'
+            })
+        }
+    }
+
 
     //helper function
     encryption(password){

@@ -9,7 +9,7 @@ module.exports = {
         cookie: {
             httpOnly: true,
             secure: false,
-            maxAge: 8000//8s
+            maxAge: 80000//8s
         }
     }
 }
