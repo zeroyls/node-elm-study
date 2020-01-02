@@ -1,6 +1,6 @@
 'use strict';
 
-import cities from '../../models/v1/cities'
+import Cities from '../../models/v1/cities'
 
 class CityHandle{
     constructor(){
@@ -9,7 +9,7 @@ class CityHandle{
 
     async getCity(req, res, next){
         let cityInfo;
-        cityInfo = await cities.cityHot();
+        cityInfo = await Cities.cityHot();
         res.send(cityInfo);
     }
 }
