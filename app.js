@@ -4,6 +4,7 @@ import express from 'express';
 import session from 'express-session'
 import connectMongo from 'connect-mongo';
 import cookieParser from 'cookie-parser';
+import router from './routes/index.js';
 
 const config = require('config-lite')({
     filename: 'default',
@@ -27,9 +28,10 @@ app.use(session({
 
 
 app.all('*', (req, res, next) => {
-    console.log(req.session);
     next();
 })
+
+router(app);
 
 app.listen(3000, () => {
     console.log(`成功监听端口：3000`)
