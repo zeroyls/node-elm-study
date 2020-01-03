@@ -4,7 +4,7 @@ import BaseComponent from '../../prototype/baseComponent'
 import crypto from 'crypto';
 import formidable from 'formidable';
 import dtime from 'time-formater';
-import { ADDRGETNETWORKPARAMS } from 'dns';
+
 
 
 class Admin extends BaseComponent{
@@ -12,6 +12,7 @@ class Admin extends BaseComponent{
         super();
         this.register = this.register.bind(this);
         this.login = this.login.bind(this);
+        this.updateAvatar = this.updateAvatar.bind(this);
     }
 
     async register(req, res, next){
@@ -204,6 +205,35 @@ class Admin extends BaseComponent{
             res.send({
                 status: 0,
                 message: '获取管理员信息失败'
+            })
+        }
+    }
+
+    async updateAvatar(req, res, next){
+        const admin_id = req.params.admin_id;
+        console.log(admin_id)
+        if(!admin_id || !Number(admin_id)){
+            console.log("admin_id参数错误", admin_id);
+            res.send({
+                status: 0,
+                message: 'admin_id参数错误'
+            })
+            return
+        }
+
+        try{
+            const image_path = await this.getPath(req);
+            await AdminModel.findOneAndUpdate({id: admin_id}, {$set: {avatar: image_path}});
+            res.send({
+                status: 1,
+                image_path
+            })
+            return
+        }catch(err){
+            console.log('上传图片失败', err);
+            res.send({
+                status: 0,
+                message: '上传图片失败'
             })
         }
     }

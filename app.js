@@ -33,6 +33,7 @@ app.all('*', (req, res, next) => {
 
 router(app);
 
+app.use(express.static('./public'))
 app.listen(3000, () => {
     console.log(`成功监听端口：3000`)
 })

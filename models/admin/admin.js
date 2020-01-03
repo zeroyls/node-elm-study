@@ -11,14 +11,14 @@ const adminSchema = new Schema({
     create_time: String,
     admin: {
         type: String,
-        default: '管理员',
-        status: Number,
-        avatar: {
-            type: String,
-            default: 'default.jpg' 
-        },
-        city: String
-    }
+        default: '管理员'
+    },
+    status: Number,
+    avatar: {
+        type: String,
+        default: 'default.jpg' 
+    },
+    city: String
 })
 
 adminSchema.index({id: 1});
