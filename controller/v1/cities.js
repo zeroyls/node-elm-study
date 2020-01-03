@@ -1,16 +1,79 @@
 'use strict';
 
-import Cities from '../../models/v1/cities'
+import Cities from '../../models/v1/cities';
+import AdressComponent from '../../prototype/addressComponent';
+import pinyin from 'pinyin';
 
-class CityHandle{
+class CityHandle extends AdressComponent{
     constructor(){
+        super();
         this.getCity = this.getCity.bind(this);
     }
 
     async getCity(req, res, next){
+        const type = req.query.type;
         let cityInfo;
-        cityInfo = await Cities.cityHot();
-        res.send(cityInfo);
+        try{
+            switch(type){
+                case 'guess':
+                    //通过req里的ip 查到所在地的城市拼音
+                    const city = await this.getCityName(req);
+                    // 通过拼音查到具体的信息
+                    cityInfo = await Cities.cityGuess(city);
+                    break;
+                case 'hot':
+                    cityInfo = await Cities.cityHot();
+                    break;
+                case 'group':
+                    cityInfo = await Cities.cityGroup();
+                    break;
+                default:
+                    res.send({
+                        message: '参数错误'
+                    })
+                    return
+            }
+            res.send(cityInfo);
+        }catch(err){
+            res.send({
+                message:'获取数据失败'
+            })
+        }
+    }
+
+    async getCityById(req, res, next){
+        const cityid = req.params.id;
+        if(isNaN(cityid)){
+            res.send({
+                message: '参数错误'
+            })
+            return
+        }
+        try{
+            const cityInfo = await Cities.getCityById(cityid);
+            res.send(cityInfo);
+        }catch(err){
+            res.send({
+                message:'获取数据失败'
+            })
+        }
+    }
+
+    async getCityName(req){
+        try{
+            const cityInfo = await this.guessPosition(req);
+            const pinyinArr = pinyin(cityInfo.city, {
+                style: pinyin.STYLE_NORMAL
+            })
+            console.log(pinyinArr);
+            let cityName = '';
+            pinyinArr.forEach(item => {
+                cityName += item[0];
+            })
+            return cityName;
+        }catch(err){
+            return '北京'
+        }
     }
 }
 

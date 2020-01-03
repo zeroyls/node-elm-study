@@ -5,10 +5,55 @@ import formidable from 'formidable'
 import path from 'path'
 import fs from 'fs'
 import gm from 'gm'
+import fetch from 'node-fetch'
 
 export default class BaseComponent{
     constructor(){
         this.idList = ['admin_id', 'img_id'];
+    }
+
+    //封装fetch函数
+    async fetch(url = '', data = {}, type = 'GET', resType = 'JSON'){
+        type = type.toUpperCase();
+        resType = resType.toUpperCase;
+        if(type == 'GET'){
+            let dataStr = '';
+            Object.keys(data).forEach(key => {
+                dataStr += key + '=' + data[key] + '&';
+            })
+
+            if(dataStr !== ''){
+                dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
+                url = url + '?' + dataStr;
+            }
+        }
+
+        let requestConfig = {
+            method: type,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }
+
+        if(type == "POST"){
+            Object.defineProperty(requestConfig, 'body', {
+                value: JSON.stringify(data)
+            })
+        }
+
+        let responseJson;
+        try{
+            const response = await fetch(url, requestConfig);
+            if(resType === 'TEXT'){
+                responseJson = await response.text();
+            }else{
+                responseJson = await response.json();
+            }
+        }catch(err){
+            throw new Error(err)
+        }
+        return responseJson;
     }
 
     async getId(type){
@@ -52,8 +97,6 @@ export default class BaseComponent{
                 }
                 const fullName = hashName + extname;
                 const repath = './public/img/' + fullName;
-                console.log("fullName:", fullName)
-                console.log("repath:", repath)
                 try{
                     fs.renameSync(files.file.path, repath);
                     gm(repath).resize(200, 200, "!").write(repath, async (err) => {
