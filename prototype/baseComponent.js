@@ -10,6 +10,7 @@ import fetch from 'node-fetch'
 export default class BaseComponent{
     constructor(){
         this.idList = ['admin_id', 'img_id'];
+        this.uploadImg = this.uploadImg.bind(this);
     }
 
     //封装fetch函数
@@ -70,6 +71,24 @@ export default class BaseComponent{
             throw new Error(err);
         }
     }
+
+    async uploadImg(req, res, next){
+        const type = req.params.type;
+        try{
+            const image_path = await this.getPath(req);
+            res.send({
+                status: 1,
+                image_path
+            })
+        }catch(err){
+            console.log(err)
+            res.send({
+                status: 0,
+                message:'上传图片失败'
+            })
+        }
+    }
+
 
     async getPath(req, res){
         return new Promise((resolve, reject) => {
