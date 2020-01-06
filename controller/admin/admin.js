@@ -7,7 +7,7 @@ import dtime from 'time-formater';
 
 
 
-class Admin extends BaseComponent{
+class AdminController extends BaseComponent{
     constructor(){
         super();
         this.register = this.register.bind(this);
@@ -251,4 +251,4 @@ class Admin extends BaseComponent{
     }
 }
 
-export default new Admin();
+export default new AdminController();

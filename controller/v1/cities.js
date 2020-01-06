@@ -1,10 +1,10 @@
 'use strict';
 
-import Cities from '../../models/v1/cities';
+import CityModel from '../../models/v1/cities';
 import AdressComponent from '../../prototype/addressComponent';
 import pinyin from 'pinyin';
 
-class CityHandle extends AdressComponent{
+class CityController extends AdressComponent{
     constructor(){
         super();
         this.getCity = this.getCity.bind(this);
@@ -19,13 +19,13 @@ class CityHandle extends AdressComponent{
                     //通过req里的ip 查到所在地的城市拼音
                     const city = await this.getCityName(req);
                     // 通过拼音查到具体的信息
-                    cityInfo = await Cities.cityGuess(city);
+                    cityInfo = await CityModel.cityGuess(city);
                     break;
                 case 'hot':
-                    cityInfo = await Cities.cityHot();
+                    cityInfo = await CityModel.cityHot();
                     break;
                 case 'group':
-                    cityInfo = await Cities.cityGroup();
+                    cityInfo = await CityModel.cityGroup();
                     break;
                 default:
                     res.send({
@@ -50,7 +50,7 @@ class CityHandle extends AdressComponent{
             return
         }
         try{
-            const cityInfo = await Cities.getCityById(cityid);
+            const cityInfo = await CityModel.getCityById(cityid);
             res.send(cityInfo);
         }catch(err){
             res.send({
@@ -77,4 +77,4 @@ class CityHandle extends AdressComponent{
     }
 }
 
-export default new CityHandle()
+export default new CityController()

@@ -1,11 +1,13 @@
 'use strict';
 
 import express from 'express';
-import CityHandle from '../controller/v1/cities';
+import CityController from '../controller/v1/cities';
+import SearchController from '../controller/v1/search';
 
 const router = express.Router();
 
-router.get('/cities', CityHandle.getCity);
-router.get('/cities/:id', CityHandle.getCityById)
+router.get('/cities', CityController.getCity);
+router.get('/cities/:id', CityController.getCityById)
+router.get('/pois', SearchController.search);
 
 export default router;

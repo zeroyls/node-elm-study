@@ -23,6 +23,6 @@ const adminSchema = new Schema({
 
 adminSchema.index({id: 1});
 
-const Admin = mongoose.model('Admin', adminSchema);
+const AdminModel = mongoose.model('Admin', adminSchema);
 
-export default Admin
+export default AdminModel

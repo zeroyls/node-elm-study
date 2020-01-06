@@ -87,9 +87,9 @@ citySchema.statics.getCityById = function(id){
     })
 }
 
-const Cities = mongoose.model('Cities', citySchema);
+const CityModel = mongoose.model('Cities', citySchema);
 
-Cities.findOne((err, data) => {
+CityModel.findOne((err, data) => {
     if(!data){
         Cities.create({
             data: cityData
@@ -97,4 +97,4 @@ Cities.findOne((err, data) => {
     }
 })
 
-export default Cities;
+export default CityModel;

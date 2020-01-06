@@ -67,4 +67,23 @@ export default class AddressComponent extends BaseComponent{
             }
         })
     }
+
+    //根据关键词和城市名查找地址
+    async searchPlace(keyword, cityName){
+        try{
+            const resObj = await this.fetch('http://apis.map.qq.com/ws/place/v1/search', {
+                key: this.tencentkey,
+                keyword: encodeURIComponent(keyword),
+                boundary: 'region(' + encodeURIComponent(cityName) + ',0)',
+                page_size: 10   
+            });
+            if(resObj.status == 0){
+                return resObj
+            }else{
+                throw new Error('搜素位置信息失败');
+            }
+        }catch(err){
+            throw new Error(err);
+        }
+    }
 }
