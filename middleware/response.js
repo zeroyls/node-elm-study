@@ -5,5 +5,9 @@ export default function(req, res, next){
         res.send(res.data);
     }catch(err){//哪里第二error才能被截获
         errorLogger.error(`${req.originalUrl}\n`, err);
+        res.send({
+            error_code: -1,
+            error_type: 'UNKNOW_ERROR'
+        });
     }
 }

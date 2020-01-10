@@ -1,14 +1,9 @@
 
+import config from '../../config/config';
 const agent = require('superagent');
 const should = require('should');
-const config = require('config-lite')({
-    filename: 'default',
-    config_basedir: __dirname,
-    config_dir: 'config'
-});
 
-const prefixUrl = 'http://localhost' + config.port;
-
+const prefixUrl = 'http://localhost:' + config.port;
 
 describe('admin controller', function(){
     it('register api', async function(){
@@ -18,6 +13,6 @@ describe('admin controller', function(){
         };
 
         const resp = await agent.post(prefixUrl + '/admin/register', params);
-        should.notEqual(resp.status, 0);
+        should.notEqual(resp.body.error_code, -1);
     })
 })

@@ -9,12 +9,7 @@ import bodyParser from 'body-parser';
 import {serverInfoLogger, connectExpressLogger} from './logger';
 import apiLoggerMiddleware from './middleware/apiLogger';
 import responseMiddleware from './middleware/response';
-
-const config = require('config-lite')({
-    filename: 'default',
-    config_basedir: __dirname,
-    config_dir: 'config'
-});
+import config from './config/config'
 
 const app = express();
 
