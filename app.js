@@ -6,7 +6,7 @@ import connectMongo from 'connect-mongo';
 import cookieParser from 'cookie-parser';
 import router from './routes/index.js';
 import bodyParser from 'body-parser';
-import {serverInfoLogger, connectExpressLogger} from './logger';
+import {serverInfoLogger, connectExpressLogger, errorLogger} from './logger';
 import apiLoggerMiddleware from './middleware/apiLogger';
 import responseMiddleware from './middleware/response';
 import config from './config/config'
@@ -39,3 +39,7 @@ app.listen(config.port, () => {
     console.log(`成功监听端口：${config.port}`);
     serverInfoLogger.info(`成功监听端口：${config.port}`);
 })
+
+process.on('unhandledRejection', error => {
+    errorLogger.error(error);
+});

@@ -59,8 +59,8 @@ class AdminController extends BaseComponent{
             }
         }catch(err){
             responseData = {
-                error_code: 2001,
-                error_type: 'REGISTER_ADMIN_FAILED'
+                error_code: 1001,
+                error_type: 'DATABASE_ERROR'
             }
         }
         res.data = responseData;
@@ -69,6 +69,7 @@ class AdminController extends BaseComponent{
 
     async login(req, res, next){
         const {user_name, password, status = 1} = req.body;
+        let responseData;
         try{
             if(!user_name){
                 throw new Error('用户名参数错误');
@@ -76,39 +77,43 @@ class AdminController extends BaseComponent{
                 throw new Error('密码参数错误');
             }
         }catch(err){
-            res.send({
-                status: 0,
-                type: 'GET_ERROR_PARAM',
-                message: err.message
-            })
-            return
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;  
         }
+
         const newpassword = this.encryption(password);
         try{
             const admin = await AdminModel.findOne({user_name});
             if(!admin){
-                res.send({
-                    status: 0,
-                    message: '用户名不存在'
-                })
+                responseData = {
+                    error_code: 2001,
+                    error_type: 'USER_NOT_EXIST'
+                }
             }else if(newpassword.toString() != admin.password.toString()){
-                res.send({
-                    status: 0,
-                    message: '管理员登录密码错误'
-                })
+                responseData = {
+                    error_code: 2002,
+                    error_type: 'PASSWORD_ERROR'
+                }
             }else{
                 req.session.admin_id = admin.id;
-                res.send({
-                    status: 1,
-                    message: '登录成功'
-                })
+                responseData = {
+                    error_code: 0,
+                    error_type: 'ERROR_OK'
+                }
             }
         }catch(err){
-            res.send({
-                status: 0,
-                message: '管理员登录失败'
-            })
+            responseData = {
+                error_code: 1001,
+                error_type: 'DATABASE_ERROR'
+            }
         }
+        res.data = responseData;
+        next();
     }
 
     async singout(req, res, next){

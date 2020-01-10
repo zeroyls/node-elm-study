@@ -15,4 +15,14 @@ describe('admin controller', function(){
         const resp = await agent.post(prefixUrl + '/admin/register', params);
         should.notEqual(resp.body.error_code, -1);
     })
+
+    it('login api', async function(){
+        const params = {
+            user_name: 'admin',
+            password: 'admin'
+        };
+
+        const resp = await agent.post(prefixUrl + '/admin/login', params);
+        should.notEqual(resp.body.error_code, -1);
+    })
 })
