@@ -1,6 +1,13 @@
 
 const agent = require('superagent');
 const should = require('should');
+const config = require('config-lite')({
+    filename: 'default',
+    config_basedir: __dirname,
+    config_dir: 'config'
+});
+
+const prefixUrl = 'http://localhost' + config.port;
 
 
 describe('admin controller', function(){
@@ -10,7 +17,7 @@ describe('admin controller', function(){
             password: 'admin'
         };
 
-        const resp = await agent.post('http://localhost:3000/admin/register', params);
+        const resp = await agent.post(prefixUrl + '/admin/register', params);
         should.notEqual(resp.status, 0);
     })
 })
