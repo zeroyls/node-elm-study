@@ -5,6 +5,10 @@ import session from 'express-session'
 import connectMongo from 'connect-mongo';
 import cookieParser from 'cookie-parser';
 import router from './routes/index.js';
+import bodyParser from 'body-parser';
+import {serverInfoLogger, connectExpressLogger} from './logger';
+import apiLoggerMiddleware from './middleware/apiLogger';
+import responseMiddleware from './middleware/response';
 
 const config = require('config-lite')({
     filename: 'default',
@@ -13,6 +17,10 @@ const config = require('config-lite')({
 });
 
 const app = express();
+
+app.use(bodyParser.json()); // for parsing application/json 无效
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded, 有效
+
 const MongoStore = connectMongo(session);
 app.use(cookieParser());
 app.use(session({
@@ -26,14 +34,13 @@ app.use(session({
     })
 }))
 
-
-app.all('*', (req, res, next) => {
-    next();
-})
-
-router(app);
+connectExpressLogger(app); //打印express log, 在res.send代码前注册res finish 事件
+router(app);//路由处理业务逻辑
+app.use(apiLoggerMiddleware);//打印api 请求响应数据， 可以只在debug的时候打开
+app.use(responseMiddleware);//发送数据
 
 app.use(express.static('./public'))
-app.listen(3000, () => {
-    console.log(`成功监听端口：3000`)
+app.listen(config.port, () => {
+    console.log(`成功监听端口：${config.port}`);
+    serverInfoLogger.info(`成功监听端口：${config.port}`);
 })

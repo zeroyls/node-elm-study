@@ -2,10 +2,7 @@
 import AdminModel from '../../models/admin/admin';
 import BaseComponent from '../../prototype/baseComponent'
 import crypto from 'crypto';
-import formidable from 'formidable';
 import dtime from 'time-formater';
-
-
 
 class AdminController extends BaseComponent{
     constructor(){
@@ -16,123 +13,102 @@ class AdminController extends BaseComponent{
     }
 
     async register(req, res, next){
-        const form = new formidable.IncomingForm();
-        form.parse(req, async (err, fields, files) => {
-            if(err){
-                res.send({
-                    status: 0,
-                    type: 'FORM_DATA_ERROR',
-                    message: '表单信息错误'
-                })
-                return
+        const {user_name, password, status = 1} = req.body;
+        let responseData;
+        try{
+            if(!user_name){
+                throw new Error('用户名错误');
+            }else if(!password){
+                throw new Error('密码错误');
             }
-            const {user_name, password, status = 1} = fields;
-            try{
-                if(!user_name){
-                    throw new Error('用户名错误');
-                }else if(!password){
-                    throw new Error('密码错误');
+        }catch(err){
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;      
+        }
+
+        try{
+            const admin = await AdminModel.findOne({user_name});
+            if(admin){
+                responseData = {
+                    error_code: 2000,
+                    error_type: 'USER_HAS_EXIST'
                 }
-            }catch(err){
-                console.log(err.message, err);
-                res.send({
-                    status: 0,
-                    type: 'GET_ERROR_PARAM',
-                    message: err.message
-                })
-                return
-            }
-            try{
-                const admin = await AdminModel.findOne({user_name});
-                if(admin){
-                    res.send({
-                        status: 0,
-                        type: 'USER_HAS_EXIST',
-                        message: '该用户已经存在'
-                    })
-                }else{
-                    const adminTip = status == 1 ? '管理员' : '超级管理员';
-                    const admin_id = await this.getId('admin_id');
-                    const newpassword = this.encryption(password);
-                    const newAdmin = {
-                        user_name,
-                        password: newpassword,
-                        id: admin_id,
-                        create_time: dtime().format('YYYY-MM-DD'),
-                        admin: adminTip,
-                        status
-                    }
-                    await AdminModel.create(newAdmin);
-                    req.session.admin_id = admin_id;
-                    res.send({
-                        status: 1,
-                        message: '注册管理员成功'
-                    })
+            }else{
+                const adminTip = status == 1 ? '管理员' : '超级管理员';
+                const admin_id = await this.getId('admin_id');
+                const newpassword = this.encryption(password);
+                const newAdmin = {
+                    user_name,
+                    password: newpassword,
+                    id: admin_id,
+                    create_time: dtime().format('YYYY-MM-DD'),
+                    admin: adminTip,
+                    status
                 }
-            }catch(err){
-                console.log(err)
-                res.send({
-                    status: 0,
-                    type: 'REGISTER_ADMIN_FAILED',
-                    message: '注册管理员失败'
-                })
+                await AdminModel.create(newAdmin);
+                req.session.admin_id = admin_id;
+                responseData = {
+                    error_code: 0,
+                    error_type: 'ERROR_OK'
+                }
             }
-        })
+        }catch(err){
+            responseData = {
+                error_code: 2001,
+                error_type: 'REGISTER_ADMIN_FAILED'
+            }
+        }
+        res.data = responseData;
+        next();
     }
 
     async login(req, res, next){
-        const form = new formidable.IncomingForm();
-        form.parse(req, async(err, fields, files) => {
-            if(err){
+        const {user_name, password, status = 1} = req.body;
+        try{
+            if(!user_name){
+                throw new Error('用户名参数错误');
+            }else if(!password){
+                throw new Error('密码参数错误');
+            }
+        }catch(err){
+            res.send({
+                status: 0,
+                type: 'GET_ERROR_PARAM',
+                message: err.message
+            })
+            return
+        }
+        const newpassword = this.encryption(password);
+        try{
+            const admin = await AdminModel.findOne({user_name});
+            if(!admin){
                 res.send({
                     status: 0,
-                    type: 'FORM_DATA_ERROR',
-                    message: '表单信息错误'
+                    message: '用户名不存在'
                 })
-                return
-            }
-            const {user_name, password, status = 1} = fields;
-            try{
-                if(!user_name){
-                    throw new Error('用户名参数错误');
-                }else if(!password){
-                    throw new Error('密码参数错误');
-                }
-            }catch(err){
+            }else if(newpassword.toString() != admin.password.toString()){
                 res.send({
                     status: 0,
-                    type: 'GET_ERROR_PARAM',
-                    message: err.message
+                    message: '管理员登录密码错误'
                 })
-                return
-            }
-            const newpassword = this.encryption(password);
-            try{
-                const admin = await AdminModel.findOne({user_name});
-                if(!admin){
-                    res.send({
-                        status: 0,
-                        message: '用户名不存在'
-                    })
-                }else if(newpassword.toString() != admin.password.toString()){
-                    res.send({
-                        status: 0,
-                        message: '管理员登录密码错误'
-                    })
-                }else{
-                    req.session.admin_id = admin.id;
-                    res.send({
-                        status: 1,
-                        message: '登录成功'
-                    })
-                }
-            }catch(err){
+            }else{
+                req.session.admin_id = admin.id;
                 res.send({
-                    status: 0,
-                    message: '管理员登录失败'
+                    status: 1,
+                    message: '登录成功'
                 })
             }
-        })
+        }catch(err){
+            res.send({
+                status: 0,
+                message: '管理员登录失败'
+            })
+        }
     }
 
     async singout(req, res, next){
