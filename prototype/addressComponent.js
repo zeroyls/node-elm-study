@@ -64,7 +64,6 @@ export default class AddressComponent extends BaseComponent{
                 }
             }catch(err){
                 reject(err);
-                console.error(err);
             }
         })
     }

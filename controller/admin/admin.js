@@ -117,106 +117,140 @@ class AdminController extends BaseComponent{
     }
 
     async singout(req, res, next){
+        let responseData;
         try{
             delete req.session.admin_id;
-            res.send({
-                status: 1,
-                message: '退出成功'
-            })
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK'
+            }
         }catch(err){
-            res.send({
-                status: 0,
-                message: '退出失败'
-            })
+            responseData = {
+                error_code: 2004,
+                error_type: 'SIGOUT_ERROR'
+            }
         }
+        res.data = responseData;
+        next();
     }
 
     async getAllAdmin(req, res, next){
         const {limit = 20, offset = 0}  = req.query;
+        let responseData;
         try{
             const allAdmin = await AdminModel.find({}, '-_id -password').sort({id: -1}).skip(Number(offset)).limit(Number(limit));
-            res.send({
-                status: 1,
-                data: allAdmin
-            })
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                allAdmin
+            }
         }catch(err){
-            res.send({
-                status: 0,
-                message: '获取超级管理列表失败'
-            })
+            responseData = {
+                error_code: 2005,
+                error_type: 'GET_ALL_ADMIN_ERROR'
+            }
         }
+        res.data = responseData;
+        next();
     }
 
     async getAdminCount(req, res, next){
+        let responseData;
         try{
             const count = await AdminModel.count();
-            res.send({
-                status: 1,
-                count   
-            })
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                count
+            }
         }catch(err){
-            res.send({
-                status: 0,
-                message: '获取管理员数量失败'
-            })
+            responseData = {
+                error_code: 2006,
+                error_type: 'GET_ADMIN_COUNT_ERROR'
+            }
         }
+        res.data = responseData;
+        next();
     }
 
     async getAdminInfo(req, res, next){
         const admin_id = req.session.admin_id;
+        let responseData;
         if(!admin_id || !Number(admin_id)){
-            res.send({
-                status: 0,
-                message: '获取管理员信息失败'
-            })
+            responseData = {
+                error_code: 1003,
+                error_type: 'NOT_LOGIN'
+            }
+            res.data = responseData;
+            next();
             return
         }
 
         try{
             const info = await AdminModel.findOne({id: admin_id}, '-_id -__v -password');
-            if(!info){
-                throw new Error('未找到当前管理员')
-            }else{
-                res.send({
-                    status: 1,
-                    data: info
-                })
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                info
             }
         }catch(err){
-            res.send({
-                status: 0,
-                message: '获取管理员信息失败'
-            })
+            responseData = {
+                error_code: 2007,
+                error_type: 'GET_ADMIN_INFO_ERROR'
+            }
         }
+        res.data = responseData;
+        next();
     }
 
+    // 上传头像
     async updateAvatar(req, res, next){
         const admin_id = req.params.admin_id;
-        console.log(admin_id)
+        let responseData;
         if(!admin_id || !Number(admin_id)){
-            console.log("admin_id参数错误", admin_id);
-            res.send({
-                status: 0,
-                message: 'admin_id参数错误'
-            })
-            return
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
         }
 
         try{
             const image_path = await this.getPath(req);
             await AdminModel.findOneAndUpdate({id: admin_id}, {$set: {avatar: image_path}});
-            res.send({
-                status: 1,
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
                 image_path
-            })
-            return
+            }
         }catch(err){
-            console.log('上传图片失败', err);
-            res.send({
-                status: 0,
-                message: '上传图片失败'
-            })
+            if(err == 'PARSE_IMG_ERROR'){
+                responseData = {
+                    error_code: 3004,
+                    error_type: 'PARSE_IMG_ERROR'
+                }
+            }else if(err == 'DATABASE_ID_ERROR'){
+                responseData = {
+                    error_code: 1002,
+                    error_type: 'DATABASE_ID_ERROR'
+                }
+            }else if(err == 'IMG_FORMAT_ERROR'){
+                responseData = {
+                    error_code: 3002,
+                    error_type: 'IMG_FORMAT_ERROR'
+                }
+            }else{
+                responseData = {
+                    error_code: 3001,
+                    error_type: 'UPLOAD_IMG_ERROR'
+                }
+            }
         }
+
+        res.data = responseData;
+        next();
     }
 
 

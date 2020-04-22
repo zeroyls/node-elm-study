@@ -57,6 +57,8 @@ export default class BaseComponent{
         return responseJson;
     }
 
+    // Ids表存放的都是新的id
+    // 获取新增的id
     async getId(type){
         if(!this.idList.includes(type)){
             throw new Error('id类型错误');
@@ -72,64 +74,89 @@ export default class BaseComponent{
         }
     }
 
+    //上传图像
     async uploadImg(req, res, next){
         const type = req.params.type;
+        let responseData;
         try{
             const image_path = await this.getPath(req);
-            res.send({
-                status: 1,
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
                 image_path
-            })
+            }
         }catch(err){
-            console.log(err)
-            res.send({
-                status: 0,
-                message:'上传图片失败'
-            })
+            if(err == 'PARSE_IMG_ERROR'){
+                responseData = {
+                    error_code: 3004,
+                    error_type: 'PARSE_IMG_ERROR'
+                }
+            }else if(err == 'DATABASE_ID_ERROR'){
+                responseData = {
+                    error_code: 1002,
+                    error_type: 'DATABASE_ID_ERROR'
+                }
+            }else if(err == 'IMG_FORMAT_ERROR'){
+                responseData = {
+                    error_code: 3002,
+                    error_type: 'IMG_FORMAT_ERROR'
+                }
+            }else{
+                responseData = {
+                    error_code: 3001,
+                    error_type: 'UPLOAD_IMG_ERROR'
+                }
+            }
         }
+
+        res.data = responseData;
+        next();
+        return;
     }
 
-
+    // 上传文件，并返回文件地址
     async getPath(req, res){
         return new Promise((resolve, reject) => {
             const form = formidable.IncomingForm();
             form.uploadDir = './public/img';//这个目录要先建好
             form.parse(req, async(err, fields, files) => {
+                if(!files || !files.file){
+                    reject('PARSE_IMG_ERROR', 3004);
+                    return;
+                }
+
                 let img_id;
                 try{
                     img_id = await this.getId('img_id');
                 }catch(err){
                     fs.unlinkSync(files.file.path);
-                    reject('获取图片id失败');
+                    reject('DATABASE_ID_ERROR', 1002);
+                    return;
                 }
 
                 const hashName = (new Date().getTime() + Math.ceil(Math.random() * 10000)).toString(16) + img_id;
                 const extname = path.extname(files.file.name);
                 if(!['.jpg', '.jpeg', '.png'].includes(extname)){
                     fs.unlinkSync(files.file.path);
-                    res.send({
-                        status: 0,
-                        message: '文件格式错误' 
-                    })
-                    reject('上传失败');
-                    return
+                    reject('IMG_FORMAT_ERROR', 3002);
+                    return;
                 }
+
                 const fullName = hashName + extname;
                 const repath = './public/img/' + fullName;
+
                 try{
                     fs.renameSync(files.file.path, repath);
                     gm(repath).resize(200, 200, "!").write(repath, async (err) => {
                         resolve(fullName)
                     })
-
                 }catch(err){
-                    console.log('保存图片失败', err);
                     if(fs.existsSync(repath)){
                         fs.unlinkSync(repath);
                     }else{
                         fs.unlinkSync(files.file.path)
                     }
-                    reject('保存图片失败')
+                    reject('SAVE_IMG_ERROR', 3003)
                 }
             })
         })
