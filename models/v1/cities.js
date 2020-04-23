@@ -7,7 +7,7 @@ const citySchema = new mongoose.Schema({
     data: {}
 })
 
-
+// 根据城市名精确查找
 citySchema.statics.cityGuess = function(name){
     return new Promise(async (resolve, reject) => {
         const firstWord = name.substr(0, 1).toUpperCase();
@@ -24,10 +24,10 @@ citySchema.statics.cityGuess = function(name){
                 }
             })
         }catch(err){
-            reject({
-                message:'查找数据失败'
+            reject({            
+                error_code: 1001,
+                error_type: 'DATABASE_ERROR'
             })
-            console.error(err);
         }
     })
 }
@@ -38,11 +38,10 @@ citySchema.statics.cityHot = function(){
             const city = await this.findOne();
             resolve(city.data.hotCities);
         }catch(err){
-            reject({
-                name: "ERROR_DATA",
-                message: "查找数据失败"
+            reject({            
+                error_code: 1001,
+                error_type: 'DATABASE_ERROR'
             })
-            console.log(err);
         }
     })
 }
@@ -50,17 +49,16 @@ citySchema.statics.cityHot = function(){
 citySchema.statics.cityGroup = function(){
     return new Promise(async (resolve, reject) => {
         try{
-
             const city = await this.findOne();
             const cityObj = city.data;
             delete(cityObj._id);
             delete(cityObj.hotCities);
             resolve(cityObj);
         }catch(err){
-            reject({
-                message:"查找数据失败"
+            reject({            
+                error_code: 1001,
+                error_type: 'DATABASE_ERROR'
             })
-            console.error(err);
         }
     })
 }
@@ -79,10 +77,10 @@ citySchema.statics.getCityById = function(id){
                 }
             })
         }catch(err){
-            reject({
-                message: '查找数据失败'
-            });
-            console.error(err);
+            reject({            
+                error_code: 1001,
+                error_type: 'DATABASE_ERROR'
+            })
         }
     })
 }

@@ -62,7 +62,6 @@ export default class BaseComponent{
     async getId(type){
         if(!this.idList.includes(type)){
             throw new Error('id类型错误');
-            return
         }
         try{
             const idData = await Ids.findOne();

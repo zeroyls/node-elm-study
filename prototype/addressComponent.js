@@ -4,6 +4,7 @@ import BaseComponent from './baseComponent'
 export default class AddressComponent extends BaseComponent{
     constructor(){
         super();
+        this.getpois = this.getpois.bind(this);
         this.tencentkey = 'RLHBZ-WMPRP-Q3JDS-V2IQA-JNRFH-EJBHL';
 		this.tencentkey2 = 'RRXBZ-WC6KF-ZQSJT-N2QU7-T5QIT-6KF5X';
 		this.tencentkey3 = 'OHTBZ-7IFRG-JG2QF-IHFUK-XTTK6-VXFBN';
@@ -136,5 +137,45 @@ export default class AddressComponent extends BaseComponent{
 			console.log('获取位置距离失败');
 			throw new Error(err);
 		}
-	}
+    }
+    
+    async geocoder(req){
+        try{
+            const address = await this.guessPosition(req);
+            const res = await this.getpois(address.lat, address.lng);
+            return res;
+
+        }catch(err){
+            throw new Error(err)
+        }
+    }
+
+    async getpois(lat, lng){
+        try{
+            const params = {
+                key: this.tencentkey,
+                location: lat + ',' + lng   
+            };
+            let res = await this.fetch('http://apis.map.qq.com/ws/geocoder/v1', params);
+            if(res.status != 0){
+                params.key = this.tencentkey2;
+                res = await this.fetch('http://apis.map.qq.com/ws/geocoder/v1', params);
+            }
+            if(res.status != 0){
+                params.key = this.tencentkey3;
+                res = await this.fetch('http://apis.map.qq.com/ws/geocoder/v1', params);
+            }
+            if(res.status != 0){
+                params.key = this.tencentkey4;
+                res = await this.fetch('http://apis.map.qq.com/ws/geocoder/v1', params);
+            }
+            if(res.status == 0){
+                return res
+            }else{
+                throw new Error('获取具体位置信息失败')
+            }
+        }catch(err){
+            throw new Error(err)
+        }
+    }
 }
