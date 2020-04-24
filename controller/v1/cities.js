@@ -10,6 +10,7 @@ class CityController extends AdressComponent{
         this.getCity = this.getCity.bind(this);
         this.getExactAddress = this.getExactAddress.bind(this);
         this.pois = this.pois.bind(this);
+        this.search = this.search.bind(this);
     }
 
     async getCity(req, res, next){
@@ -153,6 +154,61 @@ class CityController extends AdressComponent{
             }
             
         }catch(err){
+            responseData = {
+                error_code: 4001,
+                error_type: 'CITY_GET_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
+    async search(req, res, next){
+        let {city_id, keyword} = req.query;
+        let responseData;
+        if(!keyword){
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }else if(isNaN(city_id)){
+            try{
+                //根据请求的ip获取城市名
+                const cityname = await this.getCityName(req);
+                const cityInfo = await CityModel.cityGuess(cityname);
+                city_id = cityInfo.id;
+            }catch(err){
+                responseData = {
+                    error_code: 4001,
+                    error_type: 'CITY_GET_ERROR'
+                }
+                res.data = responseData;
+                next();
+                return;
+            };
+        }
+        try{
+			const cityInfo = await CityModel.getCityById(city_id);
+			const resObj = await this.searchPlace(keyword, cityInfo.name);
+			const cityList = [];
+			resObj.data.forEach((item, index) => {
+				cityList.push({
+					name: item.title,
+					address: item.address,
+					latitude: item.location.lat,
+					longitude: item.location.lng,
+					geohash: item.location.lat + ',' + item.location.lng,
+				})
+			});
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                cityList
+            }
+		}catch(err){
             responseData = {
                 error_code: 4001,
                 error_type: 'CITY_GET_ERROR'
