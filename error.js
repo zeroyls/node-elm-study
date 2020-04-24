@@ -19,11 +19,11 @@ export default {
     'PARSE_IMG_ERROR': 3004,//解析图片失败
     'UNKNOW_ERROR' : -1,
 
-    'CITY_GET_ERROR': 4001
+    'CITY_GET_ERROR': 4001,
 
 
 
-
+    'sssss': 5000
 }
 
 
