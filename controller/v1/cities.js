@@ -145,7 +145,7 @@ class CityController extends AdressComponent{
                 geohash,
                 latitude: poisArr[0],
                 longtitude: poisArr[1],
-                name: result.result.formatted_address.recommend
+                name: result.result.formatted_addresses.recommend
             }
             responseData = {
                 error_code: 0,

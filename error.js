@@ -20,10 +20,6 @@ export default {
     'UNKNOW_ERROR' : -1,
 
     'CITY_GET_ERROR': 4001,
-
-
-
-    'sssss': 5000
 }
 
 
