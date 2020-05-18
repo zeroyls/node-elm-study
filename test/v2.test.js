@@ -14,3 +14,11 @@ describe('v2 cities controller', function(){
     })
 
 })
+
+describe('v2 entry controller', function(){
+    it('getEntry api', async function(){
+        const resp = await agent.get(prefixUrl + '/v2/index_entry');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+})
