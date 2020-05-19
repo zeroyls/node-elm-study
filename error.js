@@ -21,7 +21,8 @@ export default {
 
     'CITY_GET_ERROR': 4001,
     'ENTRY_GET_ERROR': 4002,
-    'GET_ACTIVITY_ERROR': 4003
+    'GET_ACTIVITY_ERROR': 4003,
+    'GET_DELIVERY_ERROR': 4004,
 }
 
 

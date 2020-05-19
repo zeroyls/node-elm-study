@@ -22,4 +22,9 @@ describe('shopping shop controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
+    it('getDelivery api', async function(){
+        const resp = await agent.get(prefixUrl + '/shopping/v1/restaurants/delivery_modes');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
 })

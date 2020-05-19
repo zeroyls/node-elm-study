@@ -2,10 +2,32 @@
 
 import BaseComponent from '../../prototype/baseComponent';
 import ActivityModel from '../../models/shopping/activity';
+import DeliveryModel from '../../models/shopping/delivery';
+
 
 class Category extends BaseComponent{
     constructor(){
         super()
+    }
+
+    //获取配送方式
+    async getDelivery(req, res, next){
+        let responseData;
+        try{
+            const deliveries = await DeliveryModel.find({}, '-_id');
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                deliveries
+            }
+        }catch(err ){
+            responseData = {
+                error_code: 4004,
+                error_type: 'GET_DELIVERY_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
     }
 
     //获取活动列表
