@@ -17,6 +17,11 @@ describe('shopping shop controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
+    it('getCategories api', async function(){
+        const resp = await agent.get(prefixUrl + '/shopping/v2/restaurant/category');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
     it('getActivity api', async function(){
         const resp = await agent.get(prefixUrl + '/shopping/v1/restaurants/activity_attributes');
         should.equal(resp.body.error_code, ERROR.ERROR_OK);

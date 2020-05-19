@@ -3,11 +3,32 @@
 import BaseComponent from '../../prototype/baseComponent';
 import ActivityModel from '../../models/shopping/activity';
 import DeliveryModel from '../../models/shopping/delivery';
+import CategoryModel from '../../models/shopping/category';
 
 
 class Category extends BaseComponent{
     constructor(){
         super()
+    }
+
+    //获取所有餐馆分类和数量
+    async getCategories(req, res, next){
+        let responseData;
+        try{
+            const categories = await CategoryModel.find({}, '-_id');
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                categories
+            }
+        }catch(err ){
+            responseData = {
+                error_code: 4005,
+                error_type: 'GET_CATEGORY_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
     }
 
     //获取配送方式
