@@ -89,7 +89,7 @@ const CityModel = mongoose.model('Cities', citySchema);
 
 CityModel.findOne((err, data) => {
     if(!data){
-        Cities.create({
+        CityModel.create({
             data: cityData
         })
     }

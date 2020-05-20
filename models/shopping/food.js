@@ -7,7 +7,7 @@ const foodSchema = new Schema({
 	rating: {type: Number, default: 0},
 	is_featured: {type: Number, default: 0},
 	restaurant_id: {type: Number, isRequired: true},
-	category_id: {type: Number, isRequired: true},
+	menu_id: {type: Number, isRequired: true},
 	pinyin_name: {type: String, default: ''},
 	display_times: {type: Array, default: []},
 	attrs: {type: Array, default: []},

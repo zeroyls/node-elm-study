@@ -26,6 +26,7 @@ export default {
     'GET_CATEGORY_ERROR': 4005,
     'ADD_SHOP_ERROR': 4006,
     'RESTURANT_EXISTS': 4007,
+    'ADD_MENU_ERROR': 4008,
 }
 
 
