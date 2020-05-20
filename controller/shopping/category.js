@@ -11,6 +11,14 @@ class Category extends BaseComponent{
         super()
     }
 
+    async addCategory(type){
+		try{
+			await CategoryModel.addCategory(type)
+		}catch(err){
+			console.log('增加category数量失败', err);
+		}
+	}
+
     //获取所有餐馆分类和数量
     async getCategories(req, res, next){
         let responseData;

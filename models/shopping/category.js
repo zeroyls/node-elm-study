@@ -21,7 +21,7 @@ const categorySchema = new Schema({
     }]
 })
 
-categorySchema.statics.addCatagory = async function(type){
+categorySchema.statics.addCategory = async function(type){
     const categoryName = type.split('/');
     try{
         const allcate = await this.findOne();
