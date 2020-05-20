@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test.js --timeout 100000"
+    "test": "mocha test.js --timeout 100000",
+    "windowsDebug": "@powershell -Command $env:DEBUG='node-elm:*';node index.js"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-export-extensions": "^6.22.0",
+    "debug": "^4.1.1",
     "mocha": "^7.0.0",
     "superagent": "^5.1.3"
   }

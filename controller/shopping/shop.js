@@ -5,6 +5,8 @@ import ShopModel from "../../models/shopping/shop";
 import CategoryController from './category';
 import FoodController from './food';
 
+const debug = require("debug")("node-elm:shopController")
+
 class Shop extends AddressComponent{
     constructor(){
         super();
@@ -18,6 +20,7 @@ class Shop extends AddressComponent{
         try{
             restaurant_id = await this.getId('restaurant_id');
         }catch(err ){
+            debug("Error in addShop api:\n %o ", err);
             responseData = {
                 error_code: 4006,
                 error_type: "ADD_SHOP_ERROR"
@@ -42,7 +45,7 @@ class Shop extends AddressComponent{
                 throw new Error('必须填写食品种类')
             }
         }catch(err ){
-            console.log(err)
+            debug("Error in addShop api:\n %o ", err);
             responseData = {
                 error_code: 1000,
                 error_type: 'REQUEST_DATA_ERROR'
@@ -54,6 +57,7 @@ class Shop extends AddressComponent{
 
         const exists = await ShopModel.findOne({name:name});
         if(exists){
+            debug("Error in addShop api: shop has exsit");
             responseData = {
                 error_code: 4007,
                 error_type: 'RESTURANT_EXISTS'
@@ -118,6 +122,7 @@ class Shop extends AddressComponent{
                 shopDetail: newShop
             }
         }catch(err ){
+            debug("Error in addShop api:\n %o ", err);
             responseData = {
                 error_code: 4006,
                 error_type: "ADD_SHOP_ERROR"
