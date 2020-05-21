@@ -242,6 +242,64 @@ class Food extends BaseComponent{
         next();
     }
 
+    // TODO: spec 食品修改
+    async updateFood(req, res, next){
+        let responseData;
+        const {item_id, name, description = "", image_path,  new_menu_id} = req.body;
+        try{
+            if(!item_id){
+                throw new Error('食品ID错误');  
+            }
+            if(!name && !description && !image_path && new_menu_id){
+                throw new Error('无食品信息修改')
+            }
+        }catch(err){
+            debug("Error in updateFood api:\n %o", err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+        }
+
+        try{
+            let newFoodData = {name, description, image_path};
+            let food = await FoodModel.findOne({item_id});
+            const menu_id = food.menu_id;
+            const menu = await MenuModel.findOne({id: menu_id});
+            if(Number(new_menu_id) && menu_id != new_menu_id){
+                newFoodData.menu_id = new_menu_id;
+                food = await FoodModel.findOneAndUpdate({item_id}, {$set: newFoodData});
+                const new_menu = await MenuModel.findOne({id: new_menu_id});
+                let subFood = menu.foods.id(food._id);
+                subFood.set(newFoodData);
+                new_menu.foods.push(subFood);
+                new_menu.markModified('foods');
+                await new_menu.save();
+                await subFood.remove();
+                await menu.save();
+            }else{
+                food = await FoodModel.findOneAndUpdate({item_id}, {$set: newFoodData});
+                let subFood = menu.foods.id(food._id);
+                subFood.set(newFoodData);
+                await menu.save();
+            }
+
+            responseData = {
+                error_code: 0,
+                error_type: "ERROR_OK",
+                food
+            }
+        }catch(err ){
+            debug("Error in updateFood api:\n %o", err);
+            responseData = {
+                error_code: 4012,
+                error_type: 'UPDATE_FOOD_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
     async getFoods(req, res, next){
         let responseData;
         const {restaurant_id, limit = 20, offset = 0} = req.query;

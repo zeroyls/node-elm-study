@@ -59,6 +59,17 @@ describe('shopping shop controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
+    it('updateFood api', async function(){
+        const param = {
+            name: '食品修改' + parseInt(10000 * Math.random()) ,
+            image_path: "bbbaaaa",
+            item_id: 2,
+        }
+
+        const resp = await agent.post(prefixUrl + '/shopping/updatefood', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
     it('getFoods api', async function(){
         const param = {
             restaurant_id: 1
