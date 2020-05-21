@@ -54,6 +54,11 @@ describe('shopping shop controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
+    it('deleteFood api', async function(){
+        const resp = await agent.post(prefixUrl + '/shopping/deletefood/1');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
     it('getFoods api', async function(){
         const param = {
             restaurant_id: 1

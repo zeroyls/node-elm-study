@@ -282,6 +282,47 @@ class Food extends BaseComponent{
         res.data = responseData;
         next();
     }
+
+    async deleteFood(req, res, next){
+        let responseData;
+        const {food_id} = req.params;
+        try{
+            if(!food_id){
+                throw new Error('食品ID错误')
+            }
+        }catch(err ){
+            debug("Error in deleteFood api:\n %o", err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            const food = await FoodModel.findOne({item_id: food_id});
+            const menu = await MenuModel.findOne({id: food.menu_id});
+            let subFood = menu.foods.id(food._id);
+            await subFood.remove();
+            await menu.save();
+            await food.remove();
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                item_id: food_id
+            }
+        }catch(err ){
+            debug("Error in deleteFood api:\n %o", err);
+            responseData = {
+                error_code: 4011,
+                error_type: 'DELETE_FOOD_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
 }
 
 export default new Food()
