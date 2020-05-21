@@ -27,6 +27,7 @@ class Food extends BaseComponent{
         ]
         this.initData = this.initData.bind(this);
         this.addMenu = this.addMenu.bind(this);
+        this.addFood = this.addFood.bind(this);
     }
 
     //在添加商铺时，初始化商铺的食物分类和食物列表
@@ -107,6 +108,134 @@ class Food extends BaseComponent{
             responseData = {
                 error_code: 4008,
                 error_type: 'ADD_MENU_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
+
+    // TODO: spec 食品添加
+
+    async addFood(req, res, next){
+        let responseData;
+        const {restaurant_id, menu_id, name, image_path} = req.body;
+        try{
+            if(!restaurant_id){
+                throw new Error('餐馆ID错误');
+            }else if(!menu_id){
+                throw new Error('食品类型ID错误');
+            }else if(!name){
+                throw new Error('必须填写食品名称');    
+            }else if(!image_path){
+                throw new Error('必须上传食品图片');
+            }
+        }catch(err ){
+            debug("Error in addFood api:\n %o", err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        let menu;
+        try{
+            menu = await MenuModel.findOne({id: menu_id});
+        }catch(err ){
+            debug("Error in addFood api:\n %o", err);
+            responseData = {
+                error_code: 4009,
+                error_type: 'ADD_FOOD_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        let item_id;
+        try{
+            item_id = await this.getId('item_id');  
+        }catch(err ){
+            debug("Error in addFood api:\n %o", err);
+            responseData = {
+                error_code: 4009,
+                error_type: 'ADD_FOOD_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        const rating_count = Math.ceil(Math.random() * 1000);
+        const month_sales = Math.ceil(Math.random() * 1000);
+        const tips = rating_count + "评价 月售" + month_sales + "份";
+        const {description, activity, attributes } = req.body;
+        const newFoodObj = {
+            name,
+            description: description || "",
+            image_path,
+            activity: null,
+            attributes: [],
+            restaurant_id,
+            menu_id,
+            satisfy_rate: Math.ceil(Math.random() * 100),
+            satisfy_count: Math.ceil(Math.random() * 1000),
+            item_id,
+            rating: (4 + Math.random()).toFixed(1),
+            rating_count,
+            month_sales,
+            tips,
+            specfoods: [],
+            specifications: []
+        }
+
+        if(activity){
+            newFoodObj.activity = {
+                image_text_color: 'f1884f',
+                icon_color: 'f07373',
+                image_text: activity
+            }
+        }
+
+        if(attributes && attributes.length){
+            attributes.forEach(item => {
+                let attr;
+                switch(item){
+                    case '新':
+                        attr = {
+                            icon_color: '5ec452',
+                            icon_name: '新'
+                        }
+                        break;
+                    case '招牌': 
+                        attr = {
+                            icon_color: 'f07373',
+                            icon_name: '招牌'
+                        }
+                        break;
+                }
+                newFoodObj.attributes.push(attr);
+            });
+        }
+
+        try{
+            const foodEntity = await FoodModel.create(newFoodObj);
+            menu.foods.push(foodEntity);
+            menu.markModified('foods');
+            await menu.save();
+            responseData = {
+                error_code: 0,
+                error_type: "ERROR_OK",
+                newFoodObj
+            }
+        }catch(err ){
+            debug("Error in addFood api:\n %o", err);
+            responseData = {
+                error_code: 4009,
+                error_type: 'ADD_FOOD_ERROR'
             }
         }
         res.data = responseData;

@@ -42,6 +42,18 @@ describe('shopping shop controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
+    it('addFood api', async function(){
+        const param = {
+            name: '食品' + parseInt(10000 * Math.random()) ,
+            image_path: "aaaa",
+            restaurant_id: 1,
+            menu_id: 1,
+        }
+
+        const resp = await agent.post(prefixUrl + '/shopping/addfood', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
     it('getCategories api', async function(){
         const resp = await agent.get(prefixUrl + '/shopping/v2/restaurant/category');
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
