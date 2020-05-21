@@ -28,6 +28,7 @@ export default {
     'RESTURANT_EXISTS': 4007,
     'ADD_MENU_ERROR': 4008,
     'ADD_FOOD_ERROR': 4009,
+    'GET_FOODS_ERROR': 4010,
 }
 
 

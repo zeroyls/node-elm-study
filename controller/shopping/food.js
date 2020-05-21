@@ -241,6 +241,47 @@ class Food extends BaseComponent{
         res.data = responseData;
         next();
     }
+
+    async getFoods(req, res, next){
+        let responseData;
+        const {restaurant_id, limit = 20, offset = 0} = req.query;
+        try{
+            if(!restaurant_id){
+                throw new Error('餐馆ID错误');
+            }
+        }catch(err ){
+            debug("Error in getFoods api:\n %o", err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            let filter = {};
+            if(restaurant_id && Number(restaurant_id)){
+                filter = { restaurant_id}
+            }
+
+            const foods = await FoodModel.find(filter, '-id').sort({item_id: -1}).limit(Number(limit)).skip(Number(offset));
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                foods
+            }
+        }catch(err ){
+            debug("Error in getFoods api:\n %o", err);
+            responseData = {
+                error_code: 4010,
+                error_type: 'GET_FOODS_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
 }
 
 export default new Food()

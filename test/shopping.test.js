@@ -54,6 +54,15 @@ describe('shopping shop controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
+    it('getFoods api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
+
+        const resp = await agent.get(prefixUrl + '/shopping/v2/foods', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
     it('getCategories api', async function(){
         const resp = await agent.get(prefixUrl + '/shopping/v2/restaurant/category');
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
