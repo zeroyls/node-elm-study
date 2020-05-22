@@ -16,7 +16,7 @@ router.post('/addmenu', FoodController.addMenu);
 router.post('/food/add', FoodController.addFood);
 router.post('/food/delete', FoodController.deleteFood);
 router.post('/food/update', FoodController.updateFood);
-router.get('/food/get', FoodController.getFoods);
+router.get('/food/list', FoodController.listFoods);
 router.get('/food/getcount', FoodController.getFoodsCount);
 // 店铺内的食品：增删改查 end
 

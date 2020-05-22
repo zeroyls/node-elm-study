@@ -300,7 +300,7 @@ class Food extends BaseComponent{
         next();
     }
 
-    async getFoods(req, res, next){
+    async listFoods(req, res, next){
         let responseData;
         const {restaurant_id, limit = 20, offset = 0} = req.query;
         try{

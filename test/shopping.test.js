@@ -92,12 +92,12 @@ describe('shopping food controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
-    it('getFoods api', async function(){
+    it('listFoods api', async function(){
         const param = {
             restaurant_id: 1
         }
 
-        const resp = await agent.get(prefixUrl + '/shopping/food/get', param);
+        const resp = await agent.get(prefixUrl + '/shopping/food/list', param);
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
