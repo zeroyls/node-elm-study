@@ -2,7 +2,6 @@
 
 import {FoodModel, MenuModel} from '../../models/shopping/food';
 import BaseComponent from '../../prototype/baseComponent';
-import { response } from 'express';
 const debug = require('debug')('node-elm:foodController');
 
 // 对于一个商铺里的食品操作

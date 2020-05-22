@@ -49,6 +49,13 @@ const prefixUrl = 'http://localhost:' + config.port;
 
 // })
 
+describe('shopping delivery controller', function(){
+    it('listDelivery api', async function(){
+        const resp = await agent.get(prefixUrl + '/shopping/delivery/list');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+})
+
 
 describe('shopping food controller', function(){
     it('addFood api', async function(){
