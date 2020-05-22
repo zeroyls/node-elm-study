@@ -27,7 +27,7 @@ router.get('/food/list', FoodController.listFoods);
 router.get('/food/getcount', FoodController.getFoodsCount);
 // 店铺内的食品：增删改查 end
 
-router.get('/v2/restaurant/category', Category.getCategories);
+router.get('/category/list', Category.listCategory);
 
 router.get('/delivery/list', DeliveryController.listDelivery);
 

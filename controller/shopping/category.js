@@ -1,7 +1,6 @@
 'use strict';
 
 import BaseComponent from '../../prototype/baseComponent';
-
 import CategoryModel from '../../models/shopping/category';
 
 
@@ -19,7 +18,7 @@ class Category extends BaseComponent{
 	}
 
     //获取所有餐馆分类和数量
-    async getCategories(req, res, next){
+    async listCategory(req, res, next){
         let responseData;
         try{
             const categories = await CategoryModel.find({}, '-_id');
