@@ -31,6 +31,7 @@ export default {
     'GET_FOODS_ERROR': 4010,
     'DELETE_FOOD_ERROR': 4011,
     'UPDATE_FOOD_ERROR': 4012,
+    'GET_FOODS_COUNT_ERROR': 4013,
 }
 
 

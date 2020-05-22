@@ -341,6 +341,42 @@ class Food extends BaseComponent{
         next();
     }
 
+    async getFoodsCount(req, res, next){
+        let responseData;
+        const {restaurant_id} = req.query;
+        try{
+            if(!restaurant_id){
+                throw new Error('餐馆ID错误');
+            }
+        }catch(err ){
+            debug("Error in getFoodsCount api: \n %o", err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            const count = await FoodModel.find({restaurant_id}).count();
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                count
+            }
+        }catch(err){
+            debug("Error in getFoodsCount api: \n %o", err);
+            responseData = {
+                error_code: 4013,
+                error_type: 'GET_FOODS_COUNT_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
     async deleteFood(req, res, next){
         let responseData;
         const {food_id} = req.params;
