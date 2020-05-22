@@ -6,6 +6,7 @@ import Category from '../controller/shopping/category'
 import FoodController from '../controller/shopping/food'
 import DeliveryController from '../controller/shopping/delivery'
 import ActivityController from '../controller/shopping/activity'
+import RatingController from '../controller/shopping/rating'
 
 const router = express.Router();
 
@@ -32,5 +33,9 @@ router.get('/category/list', Category.listCategory);
 router.get('/delivery/list', DeliveryController.listDelivery);
 
 router.get('/activity/list', ActivityController.listActivity);
+
+router.get('/ratings/getatings', RatingController.getRatings);
+router.get('/ratings/getscores', RatingController.getScores);
+router.get('/ratings/gettags', RatingController.getTags);
 
 export default router;

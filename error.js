@@ -34,6 +34,9 @@ export default {
     'GET_FOODS_COUNT_ERROR': 4013,
     'LIST_MENU_ERROR': 4014,
     'GET_MENU_ERROR': 4015,
+    'GET_RATINGS_ERROR': 4016,
+    'GET_SCPRES_ERROR': 4017,
+    'GET_TAGS_ERROR': 4018,
 }
 
 

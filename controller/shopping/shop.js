@@ -4,6 +4,7 @@ import AddressComponent from "../../prototype/addressComponent";
 import ShopModel from "../../models/shopping/shop";
 import CategoryController from './category';
 import FoodController from './food';
+import RatingController from './rating';
 
 const debug = require("debug")("node-elm:shopController")
 
@@ -115,6 +116,7 @@ class Shop extends AddressComponent{
             const shop = new ShopModel(newShop);
             await shop.save();
             CategoryController.addCategory(category);
+            RatingController.initData(restaurant_id);
             FoodController.initData(restaurant_id);
             responseData = {
                 error_code: 0,

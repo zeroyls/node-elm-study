@@ -7,32 +7,32 @@ const should = require('should');
 
 const prefixUrl = 'http://localhost:' + config.port;
 
-// describe('shopping shop controller', function(){
-//     it('addShop api', async function(){
-//         const param = {
-//             name: '添加测试商铺' + parseInt(10000 * Math.random()) ,
-//             address: '武汉市路xx号',
-//             latitude: '31.22967',
-//             longitude: '121.4762',
-//             phone: 123456789,
-//             image_path: 'aaa',
-//             category: '快餐便当',
-//         }
+describe('shopping shop controller', function(){
+    it('addShop api', async function(){
+        const param = {
+            name: '添加测试商铺' + parseInt(10000 * Math.random()) ,
+            address: '武汉市路xx号',
+            latitude: '31.22967',
+            longitude: '121.4762',
+            phone: 123456789,
+            image_path: 'aaa',
+            category: '快餐便当',
+        }
 
-//         const resp = await agent.post(prefixUrl + '/shopping/addshop', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+        const resp = await agent.post(prefixUrl + '/shopping/addshop', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
     
-//     it('getRestaurants api', async function(){
-//         const param = {
-//             latitude: 31.22967,
-//             longitude: 121.4762
-//         }
-//         const resp = await agent.get(prefixUrl + '/shopping/restaurants?latitude=31.22967&longitude=121.4762');
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+    it('getRestaurants api', async function(){
+        const param = {
+            latitude: 31.22967,
+            longitude: 121.4762
+        }
+        const resp = await agent.get(prefixUrl + '/shopping/restaurants?latitude=31.22967&longitude=121.4762');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-// })
+})
 
 describe('shopping category controller', function(){
     it('listCategory api', async function(){
@@ -50,7 +50,33 @@ describe('shopping delivery controller', function(){
 
 describe('shopping activity controller', function(){
     it('listActivity api', async function(){
-        const resp = await agent.get(prefixUrl + '/shopping//activity/list');
+        const resp = await agent.get(prefixUrl + '/shopping/activity/list');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+})
+
+describe('shopping rating controller', function(){
+    it('getRatings api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
+        const resp = await agent.get(prefixUrl + '/shopping/ratings/getatings', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+    it('getScores api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
+        const resp = await agent.get(prefixUrl + '/shopping/ratings/getscores', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+    it('getTags api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
+        const resp = await agent.get(prefixUrl + '/shopping/ratings/gettags', param);
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 })
