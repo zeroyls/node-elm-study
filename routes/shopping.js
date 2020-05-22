@@ -11,11 +11,15 @@ const router = express.Router();
 router.post('/addshop', Shop.addShop);
 router.get('/restaurants', Shop.getRestaurants);
 router.post('/addmenu', FoodController.addMenu);
-router.post('/addfood', FoodController.addFood);
-router.post('/deletefood/:food_id', FoodController.deleteFood);
-router.post('/updatefood', FoodController.updateFood);
-router.get('/v2/foods', FoodController.getFoods);
-router.get('/v2/foods/count', FoodController.getFoodsCount);
+
+// 店铺内的食品：增删改查 start
+router.post('/food/add', FoodController.addFood);
+router.post('/food/delete', FoodController.deleteFood);
+router.post('/food/update', FoodController.updateFood);
+router.get('/food/get', FoodController.getFoods);
+router.get('/food/getcount', FoodController.getFoodsCount);
+// 店铺内的食品：增删改查 end
+
 router.get('/v2/restaurant/category', Category.getCategories);
 router.get('/v1/restaurants/delivery_modes', Category.getDelivery);
 router.get('/v1/restaurants/activity_attributes', Category.getActivity);

@@ -379,7 +379,7 @@ class Food extends BaseComponent{
 
     async deleteFood(req, res, next){
         let responseData;
-        const {food_id} = req.params;
+        const {food_id} = req.body;
         try{
             if(!food_id){
                 throw new Error('食品ID错误')
