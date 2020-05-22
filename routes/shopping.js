@@ -5,6 +5,7 @@ import Shop from '../controller/shopping/shop';
 import Category from '../controller/shopping/category'
 import FoodController from '../controller/shopping/food'
 import DeliveryController from '../controller/shopping/delivery'
+import ActivityController from '../controller/shopping/activity'
 
 const router = express.Router();
 
@@ -30,6 +31,6 @@ router.get('/v2/restaurant/category', Category.getCategories);
 
 router.get('/delivery/list', DeliveryController.listDelivery);
 
-router.get('/v1/restaurants/activity_attributes', Category.getActivity);
+router.get('/activity/list', ActivityController.listActivity);
 
 export default router;
