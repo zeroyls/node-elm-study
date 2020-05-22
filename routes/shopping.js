@@ -10,7 +10,12 @@ const router = express.Router();
 
 router.post('/addshop', Shop.addShop);
 router.get('/restaurants', Shop.getRestaurants);
-router.post('/addmenu', FoodController.addMenu);
+
+// 店铺内的食品种类 start
+router.post('/menu/add', FoodController.addMenu);
+router.get('/menu/list', FoodController.listMenu);
+router.get('/menu/get', FoodController.getMenuDetail);
+// 店铺内的食品种类 end
 
 // 店铺内的食品：增删改查 start
 router.post('/food/add', FoodController.addFood);

@@ -2,6 +2,7 @@
 
 import {FoodModel, MenuModel} from '../../models/shopping/food';
 import BaseComponent from '../../prototype/baseComponent';
+import { response } from 'express';
 const debug = require('debug')('node-elm:foodController');
 
 // 对于一个商铺里的食品操作
@@ -108,6 +109,84 @@ class Food extends BaseComponent{
             responseData = {
                 error_code: 4008,
                 error_type: 'ADD_MENU_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
+    async listMenu(req, res, next){
+        let responseData;
+        const {restaurant_id, allMenu} = req.query;
+        try{
+            if(!restaurant_id){
+                throw new Error('餐馆ID错误');
+            }
+        }catch(err ){
+            debug("Error in listMenu api:\n %o", err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            let filter;
+            if(allMenu){
+                filter = {restaurant_id};//获取所有的menu
+            }else{
+                filter = {restaurant_id, $where: function(){ return this.foods.length}}//获取有食品的menu
+            }
+            const menus = await MenuModel.find(filter, '-_id');
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                menus
+            }
+        }catch(err ){
+            debug("Error in listMenu api:\n %o", err);
+            responseData = {
+                error_code: 4014,
+                error_type: 'LIST_MENU_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
+    async getMenuDetail(req, res, next){
+        let responseData;
+        const {menu_id} = req.query;
+        try{
+            if(!menu_id){
+                throw new Error('Menu ID错误');
+            }
+        }catch(err ){
+            debug("Error in getMenuDetail api:\n %o", err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            const menu = await MenuModel.findOne({id: menu_id}, '-_id');
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                menu
+            }
+        }catch(err ){
+            debug("Error in getMenuDetail api:\n %o", err);
+            responseData = {
+                error_code: 4015,
+                error_type: 'GET_MENU_ERROR'
             }
         }
         res.data = responseData;
@@ -308,7 +387,7 @@ class Food extends BaseComponent{
                 throw new Error('餐馆ID错误');
             }
         }catch(err ){
-            debug("Error in getFoods api:\n %o", err);
+            debug("Error in listFoods api:\n %o", err);
             responseData = {
                 error_code: 1000,
                 error_type: 'REQUEST_DATA_ERROR'
@@ -331,7 +410,7 @@ class Food extends BaseComponent{
                 foods
             }
         }catch(err ){
-            debug("Error in getFoods api:\n %o", err);
+            debug("Error in listFoods api:\n %o", err);
             responseData = {
                 error_code: 4010,
                 error_type: 'GET_FOODS_ERROR'
