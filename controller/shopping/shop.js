@@ -5,6 +5,7 @@ import ShopModel from "../../models/shopping/shop";
 import CategoryController from './category';
 import FoodController from './food';
 import RatingController from './rating';
+import { response } from "express";
 
 const debug = require("debug")("node-elm:shopController")
 
@@ -134,8 +135,49 @@ class Shop extends AddressComponent{
         next();
     }
 
+    async updateShop(req, res, next){
+        let responseData;
+        const {restaurant_id, name, address, description = "", phone, category, latitude, longitude, image_path} = req.body;
+        try{
+            if(!restaurant_id){
+                throw new Error('餐馆ID错误');
+            }else if(!name && !address && !description && !phone && !category && !latitude && !longitude && !image_path){
+                throw new Error('参数错误')
+            }
+        }catch(err){
+            debug('Error in updateShop: \n %o', err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            let newData = {
+                name, address, description, phone, category, latitude, longitude, image_path
+            }
+            await ShopModel.findOneAndUpdate({id: restaurant_id}, {$set: newData});
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                newData
+            }
+        }catch(err ){
+            debug('Error in updateShop: \n %o', err);
+            responseData = {
+                error_code: 4022,
+                error_type: 'UPDATE_SHOP_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
     //获取餐馆列表
-    async getRestaurants(req, res, next){
+    async listShop(req, res, next){
         let responseData;
         const {
             latitude,
@@ -200,6 +242,101 @@ class Shop extends AddressComponent{
         next();
 
     }
+
+    async getShopDetail(req, res, next){
+        let responseData;
+        const {restaurant_id} = req.query;
+        try{
+            if(!restaurant_id){
+                throw new Error('餐馆ID错误');
+            }
+        }catch(err){
+            debug('Error in getShopDetail: \n %o', err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            const shop = await ShopModel.findOne({id: restaurant_id}, '-_id');
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                shop
+            }
+        }catch(err ){
+            debug('Error in getShopDetail: \n %o', err);
+            responseData = {
+                error_code: 4019,
+                error_type: 'GET_SHOP_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
+    //获取所有 shop count
+    async getShopCount(req, res, next){
+        let responseData;
+        try{
+            const count = await ShopModel.count();
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                count
+            }
+        }catch(err ){
+            debug('Error in getShopCount: \n %o', err);
+            responseData = {
+                error_code: 4021,
+                error_type: 'GET_SHOPCOUNT_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();  
+    }
+
+    async deleteShop(req, res, next){
+        let responseData;
+        const {restaurant_id} = req.query;
+        try{
+            if(!restaurant_id){
+                throw new Error('餐馆ID错误');
+            }
+        }catch(err){
+            debug('Error in deleteShop: \n %o', err);
+            responseData = {
+                error_code: 1000,
+                error_type: 'REQUEST_DATA_ERROR'
+            }
+            res.data = responseData;
+            next();
+            return;
+        }
+
+        try{
+            await ShopModel.remove({id: restaurant_id});
+            responseData = {
+                error_code: 0,
+                error_type: 'ERROR_OK',
+                restaurant_id
+            }
+        }catch(err){
+            debug('Error in deleteShop: \n %o', err);
+            responseData = {
+                error_code: 4020,
+                error_type: 'DELETE_SHOP_ERROR'
+            }
+        }
+        res.data = responseData;
+        next();
+    }
+
+
 }
 
 export default new Shop()

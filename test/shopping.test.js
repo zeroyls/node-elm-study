@@ -19,16 +19,54 @@ describe('shopping shop controller', function(){
             category: '快餐便当',
         }
 
-        const resp = await agent.post(prefixUrl + '/shopping/addshop', param);
+        const resp = await agent.post(prefixUrl + '/shopping/shop/add', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+    it('updateShop api', async function(){
+        const param = {
+            restaurant_id: 1,
+            name: '更新测试商铺' + parseInt(10000 * Math.random()) ,
+            address: 'xxx路',
+            latitude: '32.22967',
+            longitude: '122.4762',
+            phone: 987654321,
+            image_path: 'bbb',
+            category: '快餐便当',
+        }
+
+        const resp = await agent.post(prefixUrl + '/shopping/shop/update', param);
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
     
-    it('getRestaurants api', async function(){
+    it('listShop api', async function(){
         const param = {
             latitude: 31.22967,
             longitude: 121.4762
         }
-        const resp = await agent.get(prefixUrl + '/shopping/restaurants?latitude=31.22967&longitude=121.4762');
+        const resp = await agent.get(prefixUrl + '/shopping/shop/list', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+
+    it('getShopDetail api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
+        const resp = await agent.get(prefixUrl + '/shopping/shop/get', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+    it('getShopCount api', async function(){
+        const resp = await agent.get(prefixUrl + '/shopping/shop/getCount');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+    it('deleteShop api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
+        const resp = await agent.get(prefixUrl + '/shopping/shop/delete', param);
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
@@ -82,81 +120,81 @@ describe('shopping rating controller', function(){
 })
 
 
-// describe('shopping food controller', function(){
-//     it('addFood api', async function(){
-//         const param = {
-//             name: '食品' + parseInt(10000 * Math.random()) ,
-//             image_path: "aaaa",
-//             restaurant_id: 1,
-//             menu_id: 1,
-//         }
+describe('shopping food controller', function(){
+    it('addFood api', async function(){
+        const param = {
+            name: '食品' + parseInt(10000 * Math.random()) ,
+            image_path: "aaaa",
+            restaurant_id: 1,
+            menu_id: 1,
+        }
 
-//         const resp = await agent.post(prefixUrl + '/shopping/food/add', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+        const resp = await agent.post(prefixUrl + '/shopping/food/add', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-//     it('updateFood api', async function(){
-//         const param = {
-//             name: '食品修改' + parseInt(10000 * Math.random()) ,
-//             image_path: "bbbaaaa",
-//             item_id: 3,
-//         }
+    it('updateFood api', async function(){
+        const param = {
+            name: '食品修改' + parseInt(10000 * Math.random()) ,
+            image_path: "bbbaaaa",
+            item_id: 3,
+        }
 
-//         const resp = await agent.post(prefixUrl + '/shopping/food/update', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+        const resp = await agent.post(prefixUrl + '/shopping/food/update', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-//     it('deleteFood api', async function(){
-//         const param = {
-//             food_id: 3,
-//         }
-//         const resp = await agent.post(prefixUrl + '/shopping/food/delete', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+    it('deleteFood api', async function(){
+        const param = {
+            food_id: 3,
+        }
+        const resp = await agent.post(prefixUrl + '/shopping/food/delete', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-//     it('listFoods api', async function(){
-//         const param = {
-//             restaurant_id: 1
-//         }
+    it('listFoods api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
 
-//         const resp = await agent.get(prefixUrl + '/shopping/food/list', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+        const resp = await agent.get(prefixUrl + '/shopping/food/list', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-//     it('getFoodsCount api', async function(){
-//         const param = {
-//             restaurant_id: 1
-//         }
+    it('getFoodsCount api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
 
-//         const resp = await agent.get(prefixUrl + '/shopping/food/getcount', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+        const resp = await agent.get(prefixUrl + '/shopping/food/getcount', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-//     it('addMenu api', async function(){
-//         const param = {
-//             name: '商铺内的食品种类' + parseInt(10000 * Math.random()) ,
-//             restaurant_id: 1
-//         }
+    it('addMenu api', async function(){
+        const param = {
+            name: '商铺内的食品种类' + parseInt(10000 * Math.random()) ,
+            restaurant_id: 1
+        }
 
-//         const resp = await agent.post(prefixUrl + '/shopping/menu/add', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+        const resp = await agent.post(prefixUrl + '/shopping/menu/add', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-//     it('listMenu api', async function(){
-//         const param = {
-//             restaurant_id: 1
-//         }
+    it('listMenu api', async function(){
+        const param = {
+            restaurant_id: 1
+        }
 
-//         const resp = await agent.get(prefixUrl + '/shopping/menu/list', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
+        const resp = await agent.get(prefixUrl + '/shopping/menu/list', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
 
-//     it('getMenuDetail api', async function(){
-//         const param = {
-//             menu_id: 1
-//         }
+    it('getMenuDetail api', async function(){
+        const param = {
+            menu_id: 1
+        }
 
-//         const resp = await agent.get(prefixUrl + '/shopping/menu/get', param);
-//         should.equal(resp.body.error_code, ERROR.ERROR_OK);
-//     })
-// })
+        const resp = await agent.get(prefixUrl + '/shopping/menu/get', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+})

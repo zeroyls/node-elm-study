@@ -11,8 +11,12 @@ import RatingController from '../controller/shopping/rating'
 const router = express.Router();
 
 
-router.post('/addshop', Shop.addShop);
-router.get('/restaurants', Shop.getRestaurants);
+router.post('/shop/add', Shop.addShop);
+router.post('/shop/update', Shop.updateShop);
+router.get('/shop/list', Shop.listShop);
+router.get('/shop/get', Shop.getShopDetail);
+router.get('/shop/getCount', Shop.getShopCount);
+router.get('/shop/delete', Shop.deleteShop);
 
 // 店铺内的食品种类 start
 router.post('/menu/add', FoodController.addMenu);
