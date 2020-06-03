@@ -51,6 +51,7 @@ export default {
     'ADD_ADDRESS_ERROR': 4030,
     'DELETE_ADDRESS_ERROR': 4031,
     'LIST_ADDRESS_ERROR': 4032,
+    'CHECKOUT_ERROR': 4033,
 }
 
 

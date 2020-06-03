@@ -14,6 +14,7 @@ router.get('/cities/:id', CityController.getCityById);
 router.get('/exactedaddress', CityController.getExactAddress);
 router.get('/search', CityController.search);
 router.post('/addimg/:type', baseController.uploadImg);
+
 router.post('/carts/checkout', CartsController.checkout);
 
 

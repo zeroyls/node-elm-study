@@ -80,6 +80,8 @@ class Shop extends AddressComponent{
             id: restaurant_id,
             is_premium: is_premium || false,
             is_new: is_new || false,
+            latitude,
+            longitude,
             location: [longitude, latitude],
             opening_hours: [opening_hours],
             phone: phone,
