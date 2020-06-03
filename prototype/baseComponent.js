@@ -9,7 +9,7 @@ import fetch from 'node-fetch'
 
 export default class BaseComponent{
     constructor(){
-        this.idList = ['admin_id', 'img_id', 'restaurant_id','menu_id', 'item_id', 'user_id'];
+        this.idList = ['admin_id', 'img_id', 'restaurant_id','menu_id', 'item_id', 'user_id', 'address_id'];
         this.uploadImg = this.uploadImg.bind(this);
     }
 

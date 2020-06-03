@@ -97,3 +97,35 @@ describe('v2 user controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 })
+
+describe('v2 address controller', function(){
+    it('addAddress api', async function(){
+        const param = {
+            address: "武汉市xxxx", 
+            address_detail: "详细地址", 
+            geohash:"latitude: 31.22967,longitude: 121.4762", 
+            name: "哈哈", 
+            phone: "123456789", 
+            phone_bk: "987654321", 
+            sex: 2, 
+            tag: "公司", 
+            tag_type: 1
+        }
+        const resp = await agent.post(prefixUrl + '/v2/user/1/address/add', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+    it('listAddress api', async function(){
+        const resp = await agent.get(prefixUrl + '/v2/user/1/address/list');
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+    it('deleteAddress api', async function(){
+        const param = {
+            address_id: 1
+        }
+        const resp = await agent.get(prefixUrl + '/v2/user/address/delete', param);
+        should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    })
+
+})
