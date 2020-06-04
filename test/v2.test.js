@@ -120,12 +120,12 @@ describe('v2 address controller', function(){
         should.equal(resp.body.error_code, ERROR.ERROR_OK);
     })
 
-    it('deleteAddress api', async function(){
-        const param = {
-            address_id: 1
-        }
-        const resp = await agent.get(prefixUrl + '/v2/user/address/delete', param);
-        should.equal(resp.body.error_code, ERROR.ERROR_OK);
-    })
+    // it('deleteAddress api', async function(){
+    //     const param = {
+    //         address_id: 1
+    //     }
+    //     const resp = await agent.get(prefixUrl + '/v2/user/address/delete', param);
+    //     should.equal(resp.body.error_code, ERROR.ERROR_OK);
+    // })
 
 })
