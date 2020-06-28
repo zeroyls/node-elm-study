@@ -90,9 +90,26 @@ class AdminController extends BaseComponent{
         try{
             const admin = await AdminModel.findOne({user_name});
             if(!admin){
+                // responseData = {
+                //     error_code: 2001,
+                //     error_type: 'USER_NOT_EXIST'
+                // }
+                const adminTip = status == 1 ? '管理员' : '超级管理员';
+                const admin_id = await this.getId('admin_id');
+                const newpassword = this.encryption(password);
+                const newAdmin = {
+                    user_name,
+                    password: newpassword,
+                    id: admin_id,
+                    create_time: dtime().format('YYYY-MM-DD'),
+                    admin: adminTip,
+                    status
+                }
+                await AdminModel.create(newAdmin);
+                req.session.admin_id = admin_id;
                 responseData = {
-                    error_code: 2001,
-                    error_type: 'USER_NOT_EXIST'
+                    error_code: 0,
+                    error_type: 'ERROR_OK'
                 }
             }else if(newpassword.toString() != admin.password.toString()){
                 responseData = {
@@ -116,7 +133,7 @@ class AdminController extends BaseComponent{
         next();
     }
 
-    async singout(req, res, next){
+    async signout(req, res, next){
         let responseData;
         try{
             delete req.session.admin_id;
