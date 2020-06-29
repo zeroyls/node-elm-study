@@ -120,7 +120,8 @@ class AdminController extends BaseComponent{
                 req.session.admin_id = admin.id;
                 responseData = {
                     error_code: 0,
-                    error_type: 'ERROR_OK'
+                    error_type: 'ERROR_OK',
+                    admin
                 }
             }
         }catch(err){
