@@ -50,7 +50,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "debug": "^4.1.1",
-    "mocha": "^7.0.0",
+    "mocha": "^10.2.0",
     "superagent": "^5.1.3"
   }
 }
